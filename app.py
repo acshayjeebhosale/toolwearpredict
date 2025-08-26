@@ -41,7 +41,7 @@ for feature, (fmin, fmax) in feature_ranges.items():
     value = st.number_input(
         f"{feature} (Range: {fmin} to {fmax})",
         value=float(fmin),
-        step=0.01
+        step=0.00001
     )
     
     # Outlier check
@@ -70,3 +70,4 @@ if st.button("Predict"):
     st.success(f"✅ Tool wear: {prediction[0][0]:.4f}")
 
     st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
+
