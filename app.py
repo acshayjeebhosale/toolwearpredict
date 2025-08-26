@@ -11,7 +11,7 @@ def load_model():
 
 model = load_model()
 
-st.title(" Tool Wear Prediction App")
+st.title("🛠️ Tool Wear Prediction App")
 st.write("Enter process parameter values to get predictions from the trained model.")
 
 # -----------------------------
@@ -36,39 +36,46 @@ feature_ranges = {
 # -----------------------------
 inputs = []
 outliers = []
+missing_values = []
 
 for feature, (fmin, fmax) in feature_ranges.items():
     value = st.number_input(
         f"{feature} (Range: {fmin} to {fmax})",
-        value=float(fmin),
+        value=None,  # ← This is the key change! Makes field empty
+        placeholder=f"Enter value between {fmin} and {fmax}",
         step=0.01
     )
     
-    # Outlier check
-    if value < fmin or value > fmax:
-        outliers.append((feature, value, fmin, fmax))
-    
-    inputs.append(value)
-
-# Convert to numpy array
-input_data = np.array([inputs], dtype=np.float32)
+    # Check if value is provided
+    if value is None:
+        missing_values.append(feature)
+    else:
+        # Outlier check only if value is provided
+        if value < fmin or value > fmax:
+            outliers.append((feature, value, fmin, fmax))
+        
+        inputs.append(value)
 
 # -----------------------------
 # Prediction
 # -----------------------------
 if st.button("Predict"):
-    if outliers:
-        for feat, val, fmin, fmax in outliers:
-            st.warning(
-                f"⚠️ {feat} = {val} is **outside the expected range** "
-                f"({fmin} to {fmax}). This feature may be an **outlier** "
-                f"and should be examined or monitored again."
-            )
-    
-    # Still run prediction (even if outliers exist)
-    prediction = model.predict(input_data)
-    st.success(f"✅ Tool wear: {prediction[0][0]:.4f}")
-
-    st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
-
-
+    # Check if all values are provided
+    if missing_values:
+        st.error(f"❌ Please provide values for: {', '.join(missing_values)}")
+    else:
+        # Convert to numpy array
+        input_data = np.array([inputs], dtype=np.float32)
+        
+        if outliers:
+            for feat, val, fmin, fmax in outliers:
+                st.warning(
+                    f"⚠️ {feat} = {val} is **outside the expected range** "
+                    f"({fmin} to {fmax}). This feature may be an **outlier** "
+                    f"and should be examined or monitored again."
+                )
+        
+        # Run prediction
+        prediction = model.predict(input_data)
+        st.success(f"✅ Predicted Tool Wear: {prediction[0][0]:.4f} units")
+        st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
