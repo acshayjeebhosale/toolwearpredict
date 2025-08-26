@@ -39,12 +39,26 @@ outliers = []
 missing_values = []
 
 for feature, (fmin, fmax) in feature_ranges.items():
-    value = st.number_input(
-        f"{feature} (Range: {fmin} to {fmax})",
-        value=None,  # ← This is the key change! Makes field empty
-        placeholder=f"Enter value between {fmin} and {fmax}",
-        step=0.01
-    )
+    if feature == "run":
+        # Integer input for "run" feature
+        value = st.number_input(
+            f"{feature} (Range: {int(fmin)} to {int(fmax)})",
+            value=None,
+            placeholder=f"Enter integer between {int(fmin)} and {int(fmax)}",
+            step=1,  # Integer steps
+            format="%d"  # Display as integer
+        )
+        # Convert to integer if provided
+        if value is not None:
+            value = int(value)
+    else:
+        # Float input for all other features
+        value = st.number_input(
+            f"{feature} (Range: {fmin} to {fmax})",
+            value=None,
+            placeholder=f"Enter value between {fmin} and {fmax}",
+            step=0.01
+        )
     
     # Check if value is provided
     if value is None:
@@ -54,7 +68,7 @@ for feature, (fmin, fmax) in feature_ranges.items():
         if value < fmin or value > fmax:
             outliers.append((feature, value, fmin, fmax))
         
-        inputs.append(value)
+        inputs.append(float(value))  # Ensure all values are float for the model
 
 # -----------------------------
 # Prediction
