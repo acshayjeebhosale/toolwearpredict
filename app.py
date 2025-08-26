@@ -57,7 +57,7 @@ for feature, (fmin, fmax) in feature_ranges.items():
             f"{feature} (Range: {fmin} to {fmax})",
             value=None,
             placeholder=f"Enter value between {fmin} and {fmax}",
-            step=0.01
+
         )
     
     # Check if value is provided
@@ -93,3 +93,4 @@ if st.button("Predict"):
         prediction = model.predict(input_data)
         st.success(f"✅ Predicted Tool Wear: {prediction[0][0]:.4f} units")
         st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
+
