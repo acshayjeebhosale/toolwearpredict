@@ -67,5 +67,6 @@ if st.button("Predict"):
     
     # Still run prediction (even if outliers exist)
     prediction = model.predict(input_data)
-    st.success(f"✅ Predicted Output: {prediction[0][0]:.4f}")
+    st.success(f"✅ Tool wear: {prediction[0][0]:.4f}")
+
     st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
