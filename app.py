@@ -52,12 +52,12 @@ for feature, (fmin, fmax) in feature_ranges.items():
         if value is not None:
             value = int(value)
     else:
-        # Float input for all other features
+        # Float input for all other features - without step to avoid display issues
         value = st.number_input(
-            f"{feature} (Range: {fmin} to {fmax})",
+            f"{feature} (Range: {fmin:.6f} to {fmax:.6f})",
             value=None,
-            placeholder=f"Enter value between {fmin} and {fmax}",
-
+            placeholder=f"Enter value between {fmin:.6f} and {fmax:.6f}",
+            # step=0.01  # Removed to prevent display rounding issues
         )
     
     # Check if value is provided
@@ -93,4 +93,3 @@ if st.button("Predict"):
         prediction = model.predict(input_data)
         st.success(f"✅ Predicted Tool Wear: {prediction[0][0]:.4f} units")
         st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
-
