@@ -153,98 +153,99 @@ ax_importance.text(0.22, 2.2, 'Top 3 Influential Features (Dissertation Finding)
 st.pyplot(fig_importance)
 st.caption("Based on Random Forest feature importance analysis from the dissertation (Section 4.1.1)")
 
-# # -----------------------------
-# # NEW: Material Comparison Visualization
-# # -----------------------------
-# st.subheader("🔧 Material Comparison Analysis")
+# -----------------------------
+# NEW: Material Comparison Visualization
+# -----------------------------
+st.subheader("🔧 Material Comparison Analysis")
 
-# # Create a comparison of predicted tool wear for both materials using current inputs
-# if None not in input_values.values():
-#     # Create input data for both materials
-#     input_data_steel = np.array([inputs], dtype=np.float32)
-#     input_data_cast_iron = np.array([inputs], dtype=np.float32)
+# Create a comparison of predicted tool wear for both materials using current inputs
+if None not in input_values.values():
+    # Create input data for both materials
+    input_data_steel = np.array([inputs], dtype=np.float32)
+    input_data_cast_iron = np.array([inputs], dtype=np.float32)
     
-#     # Change material indicator (assuming material is the 4th feature, index 3)
-#     input_data_steel[0, 3] = 2  # Steel
-#     input_data_cast_iron[0, 3] = 1  # Cast Iron
+    # Change material indicator (assuming material is the 4th feature, index 3)
+    input_data_steel[0, 3] = 2  # Steel
+    input_data_cast_iron[0, 3] = 1  # Cast Iron
     
-#     # Get predictions
-#     prediction_steel = model.predict(input_data_steel)[0][0]
-#     prediction_cast_iron = model.predict(input_data_cast_iron)[0][0]
+    # Get predictions
+    prediction_steel = model.predict(input_data_steel)[0][0]
+    prediction_cast_iron = model.predict(input_data_cast_iron)[0][0]
     
-#     # Create comparison chart
-#     materials = ['Cast Iron', 'Steel']
-#     predictions = [prediction_cast_iron, prediction_steel]
-#     colors = ['#1f77b4', '#ff7f0e']
+    # Create comparison chart
+    materials = ['Cast Iron', 'Steel']
+    predictions = [prediction_cast_iron, prediction_steel]
+    colors = ['#1f77b4', '#ff7f0e']
     
-#     fig_material, ax_material = plt.subplots(figsize=(8, 6))
-#     bars = ax_material.bar(materials, predictions, color=colors, alpha=0.7)
-#     ax_material.set_ylabel('Predicted Tool Wear')
-#     ax_material.set_title('Predicted Tool Wear by Material Type')
-#     ax_material.grid(axis='y', alpha=0.3)
+    fig_material, ax_material = plt.subplots(figsize=(8, 6))
+    bars = ax_material.bar(materials, predictions, color=colors, alpha=0.7)
+    ax_material.set_ylabel('Predicted Tool Wear')
+    ax_material.set_title('Predicted Tool Wear by Material Type')
+    ax_material.grid(axis='y', alpha=0.3)
     
-#     # Add value labels on bars
-#     for i, v in enumerate(predictions):
-#         ax_material.text(i, v + 0.01, f'{v:.4f}', ha='center', va='bottom')
+    # Add value labels on bars
+    for i, v in enumerate(predictions):
+        ax_material.text(i, v + 0.01, f'{v:.4f}', ha='center', va='bottom')
     
-#     st.pyplot(fig_material)
-#     st.info("""
-#     ℹ️ Based on dissertation findings (Section 3.2): 
-#     - Cast iron (65.4% of dataset) typically generates higher vibration
-#     - Steel (34.6% of dataset) may result in more consistent but potentially higher tool wear rates
-#     """)
-# else:
-#     st.info("ℹ️ Enter all parameter values to see material comparison analysis")
+    st.pyplot(fig_material)
+    st.info("""
+    ℹ️ Based on dissertation findings (Section 3.2): 
+    - Cast iron (65.4% of dataset) typically generates higher vibration
+    - Steel (34.6% of dataset) may result in more consistent but potentially higher tool wear rates
+    """)
+else:
+    st.info("ℹ️ Enter all parameter values to see material comparison analysis")
 
-# # -----------------------------
-# # Prediction
-# # -----------------------------
-# if st.button("Predict"):
-#     # Check if all values are provided
-#     if missing_values:
-#         st.error(f"❌ Please provide values for: {', '.join(missing_values)}")
-#     else:
-#         # Convert to numpy array
-#         input_data = np.array([inputs], dtype=np.float32)
+# -----------------------------
+# Prediction
+# -----------------------------
+if st.button("Predict"):
+    # Check if all values are provided
+    if missing_values:
+        st.error(f"❌ Please provide values for: {', '.join(missing_values)}")
+    else:
+        # Convert to numpy array
+        input_data = np.array([inputs], dtype=np.float32)
         
-#         if outliers:
-#             for feat, val, fmin, fmax in outliers:
-#                 st.warning(
-#                     f"⚠️ {feat} = {val} is **outside the expected range** "
-#                     f"({fmin} to {fmax}). This feature may be an **outlier** "
-#                     f"and should be examined or monitored again."
-#                 )
+        if outliers:
+            for feat, val, fmin, fmax in outliers:
+                st.warning(
+                    f"⚠️ {feat} = {val} is **outside the expected range** "
+                    f"({fmin} to {fmax}). This feature may be an **outlier** "
+                    f"and should be examined or monitored again."
+                )
         
-#         # Run prediction
-#         prediction = model.predict(input_data)
+        # Run prediction
+        prediction = model.predict(input_data)
         
-#         # Round only the predicted value to 6 decimal places
-#         rounded_prediction = round(prediction[0][0], 6)
+        # Round only the predicted value to 6 decimal places
+        rounded_prediction = round(prediction[0][0], 6)
         
-#         st.success(f"✅ Predicted Tool Wear: {rounded_prediction:.6f} units")
+        st.success(f"✅ Predicted Tool Wear: {rounded_prediction:.6f} units")
         
-#         # Context from dissertation
-#         st.info("""
-#         **Dissertation Context:** This prediction is generated by a Deep Neural Network that 
-#         achieved R² = 0.972, significantly outperforming the Random Forest baseline (R² = 0.789) 
-#         as detailed in Section 4.1.3 of the dissertation.
-#         """)
+        # Context from dissertation
+        st.info("""
+        **Dissertation Context:** This prediction is generated by a Deep Neural Network that 
+        achieved R² = 0.972, significantly outperforming the Random Forest baseline (R² = 0.789) 
+        as detailed in Section 4.1.3 of the dissertation.
+        """)
         
-#         # Interpretation guidance based on dissertation
-#         if rounded_prediction > 0.7:
-#             st.error("""
-#             🚨 **High Tool Wear Alert:** Based on the EOL criteria established in Section 3.2.9 
-#             of the dissertation, this level of tool wear may indicate approaching End-of-Life conditions.
-#             """)
-#         elif rounded_prediction > 0.4:
-#             st.warning("""
-#             ⚠️ **Moderate Tool Wear:** Tool is wearing but remains within operational limits. 
-#             Monitor vibration signals as established in the literature review.
-#             """)
-#         else:
-#             st.success("""
-#             ✅ **Low Tool Wear:** Tool is in good condition with minimal wear.
-#             """)
+        # Interpretation guidance based on dissertation
+        if rounded_prediction > 0.7:
+            st.error("""
+            🚨 **High Tool Wear Alert:** Based on the EOL criteria established in Section 3.2.9 
+            of the dissertation, this level of tool wear may indicate approaching End-of-Life conditions.
+            """)
+        elif rounded_prediction > 0.4:
+            st.warning("""
+            ⚠️ **Moderate Tool Wear:** Tool is wearing but remains within operational limits. 
+            Monitor vibration signals as established in the literature review.
+            """)
+        else:
+            st.success("""
+            ✅ **Low Tool Wear:** Tool is in good condition with minimal wear.
+            """)
 
 st.info("ℹ️ Note: Predictions with outlier inputs may be unreliable.")
+
 
